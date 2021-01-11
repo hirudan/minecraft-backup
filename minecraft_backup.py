@@ -16,6 +16,7 @@ def save_routine():
     num_backups_per_world = 7
     save_file_dir = "C:\\Users\\$current_user$\\AppData\\Roaming\\.minecraft\\saves"
     config_data = {}
+
     # Read config file and load up settings
     try:
         with open(config_file_name, 'r') as config_file:
@@ -30,6 +31,7 @@ def save_routine():
     # Enumerate worlds to check
     current_user = getpass.getuser()
     world_dir = save_file_dir.replace("$current_user$", current_user)
+    # If no backup path was specified, drop backup in Minecraft's persistence directory
     if not backup_path:
         backup_path = world_dir
     world_list = []
@@ -45,12 +47,10 @@ def save_routine():
             last_mtime = os.path.getmtime(os.path.join(world_dir, world, dat_file))
         except OSError:
             print(e)
-            errstr = str("Could not access " + dat_file + " for world " + world + ". Continuing...")
-            print(errstr)
+            print("Could not access " + dat_file + " for world " + world + ". Continuing...")
             continue
         if world in last_modified_times and last_mtime == last_modified_times[world]:
-            errstr = str("Last modified time for world " + world + " did not change, not saving")
-            print(errstr)
+            print("Last modified time for world " + world + " did not change, not saving")
             continue
         try:
             # Archive world and write last modified time to configs
